@@ -1,4 +1,4 @@
-##Library Detection Testing Plan
+# Library Detection Testing Plan
 
 ### Purpose & Scope
 
