@@ -1,57 +1,16 @@
-# Anomalies & Event Mapping: Library
+# Anomalies & Event Mapping
 
-## 1. User Behavior Anomalies
+## 1. Purpose & Scope
 
-- After-hours OPAC query surge  
-  - Data Source: OPAC application logs  
-  - Indicator: >100 searches in 30 min outside business hours  
-  - Severity: Medium  
-  - Initial Response: Verify user badge swipe; if none, trigger alert  
-
-- Repeated self-checkout failures  
-  - Data Source: Self-checkout kiosk logs  
-  - Indicator: ≥5 failed scans of library card within 5 min  
-  - Severity: Low  
-  - Initial Response: Lock kiosk UI; dispatch staff to assist  
-
-- Unusual staff credential use  
-  - Data Source: Directory service / EDR logs  
-  - Indicator: Staff account accessing admin console from public Wi-Fi  
-  - Severity: High  
-  - Initial Response: Lock account; confirm identity via phone  
-
-## 2. System & Network Anomalies
-
-- Bulk download from digital archives  
-  - Data Source: File server / web server logs  
-  - Indicator: ≥50 GB transferred to a single IP in 1 hr  
-  - Severity: High  
-  - Initial Response: Throttle connection; investigate user session  
-
-- Firewall port-scan pattern  
-  - Data Source: Firewall logs  
-  - Indicator: >100 different ports probed by one external IP in 10 min  
-  - Severity: Medium  
-  - Initial Response: Blacklist IP; escalate to network team  
-
-- Rogue device on library VLAN  
-  - Data Source: Network controller / NAC logs  
-  - Indicator: New MAC address not in asset inventory  
-  - Severity: Medium  
-  - Initial Response: Quarantine on guest network; notify IT  
-
-## 3. Physical-Digital Correlation
-
-| Event Source            | Anomaly                                | Correlated Signal                  | Response Action                                |
-|-------------------------|----------------------------------------|------------------------------------|------------------------------------------------|
-| CCTV door sensor       | Entry after hours                      | OPAC login attempts during closed period | Verify badge logs; if mismatch, alert security |
-| Badge reader           | Tailgating event                       | Multiple badge scans in same minute | Review CCTV clip; notify facilities             |
-| RFID gate controller   | Gate held open >30 sec                 | High self-checkout failures        | Lock gate; dispatch on-floor staff              |
-
-## 4. Response Prioritization
-
-1. High: Potential data exfiltration or credential compromise  
-2. Medium: Network reconnaissance or atypical user behavior  
-3. Low: Minor kiosk issues or single-user anomalies  
+This document defines how we classify and map detected anomalies to underlying event sources. It ensures every anomaly use case is traceable to one or more log events, enabling clear rule authoring, tuning, and investigation workflows.
 
 ---
+
+## 2. Anomaly Definitions & Event Mapping
+
+| Anomaly ID | Name                              | Description                                                 | Event Source                    | Key Fields / Indicators               | Detection Rule ID | Severity |
+|------------|-----------------------------------|-------------------------------------------------------------|---------------------------------|---------------------------------------|-------------------|----------|
+| A-001      | Unusual Login Geography           | User logs in from a location not seen in baseline history   | Windows Security Event (4624), Cloud Auth Logs | user.name, src.ip, geo.location     | R-101             | High     |
+| A-002      | Multiple Failed Logon Attempts    | Excessive failed logins over short interval                  | Windows Security Event (4625), SSHD Logs         | user.name, src.ip, failure.count    | R-102             | Medium   |
+| A-003      | New Administrative Account Created| Creation of a user with privileged group membership         | Windows Security Event (4720 & 4732), LDAP Logs  | user.name, group.name               | R-103             | High     |
+| A-004      | Suspicious Process Spawn          | High-risk executable launched by non-standard parent process | Sysmon
