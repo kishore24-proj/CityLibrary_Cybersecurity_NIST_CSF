@@ -20,11 +20,4 @@ This plan applies to all technology and information assets managed by the librar
 
 Incidents involving vendor-managed platforms (e.g., third-party e-book portals) must also follow these procedures, with coordination between library IT staff and external support teams.
 
----
 
-Would you like to continue with:
-
-- Defining Roles & Responsibilities?  
-- A runbook for a malware outbreak on library systems?  
-- A data breach playbook tailored to patron data?  
-- Or the Incident Classification matrix?  
