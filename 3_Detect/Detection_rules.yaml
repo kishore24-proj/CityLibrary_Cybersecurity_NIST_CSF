@@ -1,0 +1,64 @@
+# File: 3_Detect/detection_rules.yaml
+
+version: 1
+
+rules:
+  - id: AE-001
+    name: brute_force_login_attempts
+    description: Detect more than 10 failed authentication attempts from the same IP within 2 minutes
+    data_source: auth_logs
+    condition:
+      event_type: authentication_failure
+      count: ">10"
+      timeframe: 2m
+      group_by: source_ip
+    severity: high
+    actions:
+      - type: alert_email
+        recipients:
+          - secops@example.com
+
+  - id: AE-002
+    name: data_exfiltration_large_transfer
+    description: Detect outbound data transfer over 500 MB to an external IP
+    data_source: network_flow_logs
+    condition:
+      metric: bytes_out
+      operator: ">"
+      threshold: 524288000   # 500 MB in bytes
+      filter:
+        direction: outbound
+        external: true
+      timeframe: 10m
+    severity: critical
+    actions:
+      - type: pagerduty
+        service_key: YOUR_SERVICE_KEY
+
+  - id: AE-003
+    name: privilege_escalation_detection
+    description: Detect Windows event 4672 (privileged services added)
+    data_source: windows_event_logs
+    condition:
+      event_id: 4672
+    severity: medium
+    actions:
+      - type: alert_email
+        recipients:
+          - secops@example.com
+
+  - id: AE-004
+    name: suspicious_dns_beaconing
+    description: Detect more than 5 DNS queries to the same domain within 5 minutes
+    data_source: dns_logs
+    condition:
+      metric: query_count
+      operator: ">"
+      threshold: 5
+      group_by: query_domain
+      timeframe: 5m
+    severity: medium
+    actions:
+      - type: alert_email
+        recipients:
+          - secops@example.com
