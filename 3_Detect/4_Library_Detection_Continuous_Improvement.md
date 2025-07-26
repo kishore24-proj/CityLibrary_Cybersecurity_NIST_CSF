@@ -72,3 +72,49 @@ This plan ensures that detection rules, processes, and metrics evolve based on r
 | Date       | Author   | Description                                  |
 |------------|----------|----------------------------------------------|
 | 2025-07-26 | Kishore  | Initial continuous improvement plan created  |
+
+## 8. Key Performance Indicators
+
+This section defines the metrics that will gauge the success of the continuous improvement process. Each KPI is measured monthly, tracked on dashboards, and reviewed during tuning meetings.
+
+- Mean Time to Detect (MTTD): average time from threat emergence to alert  
+- Mean Time to Respond (MTTR): average time from alert to containment action  
+- True Positive Rate (TPR): proportion of alerts that correspond to real incidents  
+- False Positive Rate (FPR): proportion of alerts deemed benign after triage  
+- Feedback Closure Rate: percentage of feedback tickets resolved within SLA  
+- Rule Change Adoption: ratio of deployed changes that pass validation tests  
+
+| KPI                     | Target Threshold     | Measurement Tool        |
+|-------------------------|----------------------|-------------------------|
+| MTTD                    | ≤ 15 minutes         | SIEM dashboard          |
+| MTTR                    | ≤ 30 minutes         | Incident tracker        |
+| TPR                     | ≥ 95%                | Detection metrics report|
+| FPR                     | ≤ 5%                 | Analyst triage logs     |
+| Feedback Closure Rate   | ≥ 90% within 30 days | Jira “DETECT” project   |
+| Rule Change Adoption    | ≥ 98% pass rate      | Automated test suite    |
+
+---
+
+## 9. Risk Considerations
+
+Identifying and mitigating risks ensures the continuous improvement loop remains effective and resilient.
+
+- Data Drift: logging schema changes or library system upgrades may invalidate rules  
+- Over-Tuning: overly aggressive threshold adjustments can increase FPR or blind spots  
+- Resource Constraints: limited analyst or engineering capacity may delay updates  
+- Dependency Failures: CI/CD pipeline outages can stall deployments and testing  
+- Threat Evolution: novel attack techniques may outpace existing detection logic  
+
+For each risk, assign an owner, document mitigation steps in the risk register, and review quarterly.
+
+---
+
+## 10. Appendix: Templates & Resources
+
+| Appendix | Name                          | Location                                           |
+|----------|-------------------------------|----------------------------------------------------|
+| A        | Tuning Ticket Template        | docs/templates/tuning_ticket.md                    |
+| B        | Post-Mortem Report Template  | docs/templates/postmortem_report.md                |
+| C        | Detection Testing Checklist   | docs/templates/detection_testing_checklist.xlsx    |
+| D        | Dashboard Setup Guide         | docs/guides/betterstack_dashboard_setup.md         |
+
