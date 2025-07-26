@@ -1,0 +1,85 @@
+## Library Detection Rules Configuration
+
+### Purpose & Scope
+
+This YAML file codifies all the core detection rules for library systems—login anomalies, data exfiltration patterns, after-hours access, kiosk misuse, etc. Every rule here drives the SIEM/streaming pipeline’s alerting logic.
+
+### File Location
+
+`3_Detect/rules/Library_Detection_Rules_Library.yaml`
+
+---
+
+### Schema & Parameters
+
+```yaml
+# Top-level schema
+version: 1.0
+default_severity: low
+
+rules:
+  - rule_id: LD-RULE-001
+    name: Excessive Login Failures
+    description: Detect when a user has more than 5 failed logins in 10 minutes
+    detection_type: threshold
+    condition:
+      field: login_failures
+      operator: '>'
+      value: 5
+      timeframe: 10m
+    severity: medium
+    actions:
+      - alert
+      - throttle_account
+    enabled: true
+
+  - rule_id: LD-RULE-002
+    name: Large Data Download
+    description: Flag sessions downloading over 500 MB in a single event
+    detection_type: threshold
+    condition:
+      field: data_download_volume
+      operator: '>'
+      value: 500
+      unit: MB
+    severity: high
+    actions:
+      - alert
+      - block_session
+    enabled: true
+
+  - rule_id: LD-RULE-003
+    name: After-Hours Access
+    description: Any access between 10 PM–6 AM local time
+    detection_type: schedule
+    condition:
+      field: access_time
+      operator: in_range
+      value: "22:00-06:00"
+    severity: low
+    actions:
+      - alert
+    enabled: true
+
+  - rule_id: LD-RULE-004
+    name: New Device Fingerprint
+    description: User logs in from an unseen device fingerprint
+    detection_type: novelty
+    condition:
+      field: device_fingerprint
+      operator: changes
+    severity: medium
+    actions:
+      - alert
+    enabled: true
+
+  - rule_id: LD-RULE-005
+    name: Self-Checkout Anomaly
+    description: Unusual transaction patterns at kiosks vs. baseline
+    detection_type: custom
+    condition:
+      module: self_checkout_anomaly_detector
+    severity: medium
+    actions:
+      - alert
+    enabled: true
